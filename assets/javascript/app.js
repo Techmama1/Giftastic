@@ -1,50 +1,106 @@
 
 
 
-var buttons = ["snowboarding" , "skiing" , "figure skating" , "hockey"]
+var buttons = ["alpine skiing" , "snowboarding" , "pond skimming" , "figure skating"]
 var apiKey= "fkBd6HbptND8N0pcjyIA7WfazYRv78Cv"
 
     function renderButtons() {
          $("#buttons").empty();
         for(var i=0; i < buttons.length; i++) {
-        var newWinterSport = $("<button>");
-        newWinterSport.addClass("buttons");
-        newWinterSport.attr("data-winterSport", buttons[i]);
-        newWinterSport.text(buttons[i]);
-        $("#buttons").append(newWinterSport);
+        var newWinterSports = $("<buttons>");
+        newWinterSports.addClass("snowSports");
+        newWinterSports.attr("data newWinterSports", buttons[i]);
+        newWinterSports.text(buttons[i]);
+        $("#buttons").append(newWinterSports);
         }
     }
 
-     // This function handles events where one button is clicked
-        $("#add-buttons").on("click", function(event) {
-        // event.preventDefault() prevents the form from trying to submit itself.
-        // We're using a form so that the user can hit enter instead of clicking the button if they want
-        event.preventDefault();
+       // from button triggerd- ajax solution /////////////////////
+          // Event listener for all button elements
+    $("#buttons").on("click", function(event) {
+
+      event.preventDefault();
 
         // This line will grab the text from the input box
-        var buttons = $("#buttons-input").val().trim();
-        // The buttons from the textbox is then added to our array
-        buttons.push(buttons);
+        var winterSports = $("#winterSports").val().trim();
+        // The movie from the textbox is then added to our array
+        winterSports.push(winterSport);
 
-        // calling renderButtons which handles the processing of our winter sports array
+        // calling renderButtons which handles the processing of our movie array
         renderButtons();
-    });
+      });
 
-      // Calling the renderButtons function at least once to display the initial list of winter sports
+      // Calling the renderButtons function at least once to display the initial list of movies
       renderButtons();
 
 
-        // This .on("click") function will trigger the AJAX Call
+  
+        // Constructing a URL to search Giphy for the name of the person who said the quote
+        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+          newWinterSports + "&api_key=fkBd6HbptND8N0pcjyIA7WfazYRv78Cv&limit=10";
+  
+        // Performing our AJAX GET request
+        $.ajax({
+          url: queryURL,
+          method: "GET"
+        })
+          // After the data comes back from the API
+          .then(function(response) {
+            
+            // Storing an array of results in the results variable
+            var results = response.data;
+            console.log (response)
+            // Looping over every result item
+            for (var i = 0; i < buttons.length; i++) {
+  
+              // Only taking action if the photo has an appropriate rating
+              if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
+                // Creating a div with the class "item"
+                var gifDiv = $("<div class='item'>");
+  
+                // Storing the result item's rating
+                var rating = results[i].rating;
+  
+                // Creating a paragraph tag with the result item's rating
+                var p = $("<p>").text("Rating: " + rating);
+  
+                // Creating an image tag
+                var winterSportsImage = $("<img>");
+  
+                // Giving the image tag an src attribute of a proprty pulled off the
+                // result item
 
-    $("#find-wintersports").on("click", function(event) {
+                winterSportsImage.attr("src", results[i].images.fixed_height.url);
+  
+                // Appending the paragraph and winterSportImage we created to the "gifDiv" div we created
+                gifDiv.append(p);
+                gifDiv.append(winterSportsImage);
+  
+                // Prepending the gifDiv to the "#gifs-appear-here" div in the HTML
+                $("#gifs-appear-here").prepend(gifDiv);
+             
+        
+            $(".gif").on("click", function() {
+            // The attr jQuery method allows us to get or set the value of any attribute on our HTML element
+            var state = $(this).attr("data-state");
+            // If the clicked image's state is still, update its src attribute to what its data-animate value is.
+            // Then, set the image's data-state to animate
+            // Else set src to the data-still value
+            if (state === "still") {
+              $(this).attr("src", $(this).attr("data-animate"));
+              $(this).attr("data-state", "animate");
+            } else {
+              $(this).attr("src", $(this).attr("data-still"));
+              $(this).attr("data-state", "still");
+            }
+          });
+        }
 
-        // event.preventDefault() can be used to prevent an event's default behavior.
-        // Here, it prevents the submit button from trying to submit a form when clicked
-        event.preventDefault();
 
-        // Here we grab the text from the input box
-        // Here we construct our URL
-        var queryURL = "https://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy";
 
-    });
+        
+        
+
+
+
 
